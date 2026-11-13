@@ -1,0 +1,6 @@
+{
+  "name": "Saudi E-commerce Tools - أدوات المتاجر الإلكترونية",
+  "description": "منصة أدوات وحاسبات مالية مجانية لأصحاب المتاجر الإلكترونية في السعودية لحساب الأرباح وسعر البيع وضريبة القيمة المضافة ونقطة التعادل وعمولات الدفع.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
