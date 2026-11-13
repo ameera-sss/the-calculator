@@ -1,9 +1,10 @@
-import { Calendar, User, ArrowRight, ArrowLeft, Calculator } from 'lucide-react';
+import { Calendar, User, ArrowRight, ArrowLeft, Calculator, Tag } from 'lucide-react';
 import { SEOHead } from '../components/SEOHead';
 import { Link } from '../utils/router';
 import { AdSlot } from '../components/AdSlot';
 import articlesData from '../data/articles.json';
 import { ARTICLES_EN } from '../data/articlesEn';
+import { getArticleCoverImage } from '../data/articleImages';
 import { SITE_CONFIG } from '../config/site';
 import { usePreferences } from '../context/PreferencesContext';
 
@@ -57,6 +58,8 @@ export function ArticlePage({ slug }: { slug: string }) {
       }
     : rawArticle;
 
+  const coverImg = getArticleCoverImage(rawArticle.slug, rawArticle.coverImage);
+  const coverAlt = isEn ? article.title : rawArticle.coverAlt || article.title;
   const relatedArticles = articles.filter((a) => a.slug !== slug).slice(0, 2);
 
   const schema = [
@@ -65,11 +68,12 @@ export function ArticlePage({ slug }: { slug: string }) {
       '@type': 'BlogPosting',
       headline: article.title,
       description: article.description,
+      image: coverImg,
       keywords: (rawArticle.keywords || []).join('، '),
       articleSection: article.category,
       inLanguage: lang,
       author: {
-        '@type': 'Person',
+        '@type': 'Organization',
         name: article.author,
       },
       datePublished: rawArticle.publishedAt,
@@ -208,6 +212,18 @@ export function ArticlePage({ slug }: { slug: string }) {
           </div>
         );
 
+      case 'image':
+        return block.src ? (
+          <figure key={index} className="my-8 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+            <img
+              src={block.src}
+              alt={block.alt || article.title}
+              referrerPolicy="no-referrer"
+              className="w-full h-auto object-cover"
+            />
+          </figure>
+        ) : null;
+
       default:
         return null;
     }
@@ -239,6 +255,16 @@ export function ArticlePage({ slug }: { slug: string }) {
       labelEn: 'Open Break-Even Calculator',
       href: '/#break-even',
     },
+    'smart-discount-campaigns-without-losing-profit': {
+      labelAr: 'افتح حاسبة الخصومات والعروض',
+      labelEn: 'Open Discount Calculator',
+      href: '/#discount',
+    },
+    'reduce-order-cost-and-cod-returns-saudi-stores': {
+      labelAr: 'افتح حاسبة تكلفة الطلب',
+      labelEn: 'Open Order Cost Calculator',
+      href: '/#order-cost',
+    },
   };
 
   const targetTool = toolLinkMap[rawArticle.slug] || {
@@ -255,6 +281,8 @@ export function ArticlePage({ slug }: { slug: string }) {
         canonicalPath={`/blog/${rawArticle.slug}/`}
         type="article"
         keywords={rawArticle.keywords}
+        image={coverImg}
+        imageAlt={coverAlt}
         publishedTime={rawArticle.publishedAt}
         modifiedTime={rawArticle.updatedAt || rawArticle.publishedAt}
         section={article.category}
@@ -278,7 +306,7 @@ export function ArticlePage({ slug }: { slug: string }) {
         </nav>
 
         {/* Article Header */}
-        <header className="mb-10 pb-8 border-b border-slate-200 dark:border-slate-800">
+        <header className="mb-8 pb-6 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-xs font-bold text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 px-3 py-1 rounded-full">
               {article.category}
@@ -310,12 +338,47 @@ export function ArticlePage({ slug }: { slug: string }) {
           </div>
         </header>
 
+        {/* Expressive Editorial Cover Image */}
+        {coverImg && (
+          <figure className="mb-10 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm bg-slate-100 dark:bg-slate-900">
+            <div className="aspect-video w-full overflow-hidden">
+              <img
+                src={coverImg}
+                alt={coverAlt}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <figcaption className="px-5 py-3 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950/60 border-t border-slate-200/80 dark:border-slate-800">
+              {coverAlt}
+            </figcaption>
+          </figure>
+        )}
+
         {/* Article Body Content */}
         <div className="prose prose-slate dark:prose-invert max-w-none">
           {((article.content || []) as ContentBlock[]).map((block, idx) =>
             renderContentBlock(block, idx)
           )}
         </div>
+
+        {/* Keywords Pills for SEO Discoverability */}
+        {rawArticle.keywords && rawArticle.keywords.length > 0 && !isEn && (
+          <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 dark:text-slate-400 me-1">
+              <Tag className="w-3.5 h-3.5" />
+              كلمات مفتاحية:
+            </span>
+            {rawArticle.keywords.map((kw) => (
+              <span
+                key={kw}
+                className="text-xs px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium"
+              >
+                {kw}
+              </span>
+            ))}
+          </div>
+        )}
 
         <AdSlot slotId={SITE_CONFIG.ads.slots.inArticle} />
 
@@ -367,33 +430,47 @@ export function ArticlePage({ slug }: { slug: string }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {relatedArticles.map((rawRel) => {
                 const rel = isEn && ARTICLES_EN[rawRel.slug] ? { ...rawRel, ...ARTICLES_EN[rawRel.slug] } : rawRel;
+                const relImg = getArticleCoverImage(rawRel.slug, rawRel.coverImage);
                 return (
                   <div
                     key={rel.id}
-                    className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-teal-400 transition flex flex-col justify-between"
+                    className="rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-teal-400 transition flex flex-col justify-between overflow-hidden group"
                   >
-                    <div>
-                      <span className="text-[11px] font-semibold text-teal-700 dark:text-teal-400 mb-1.5 block">
-                        {rel.category}
-                      </span>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-2 leading-snug">
-                        <Link href={`/blog/${rawRel.slug}/`} className="hover:text-teal-700 dark:hover:text-teal-400 transition">
-                          {rel.title}
-                        </Link>
-                      </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                        {rel.excerpt}
-                      </p>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between text-xs">
-                      <span className="text-slate-400 text-[11px]">{rawRel.publishedAt}</span>
-                      <Link
-                        href={`/blog/${rawRel.slug}/`}
-                        className="text-teal-700 dark:text-teal-400 font-bold hover:underline inline-flex items-center gap-1"
-                      >
-                        <span>{isEn ? 'Read Article' : 'اقرأ المقال'}</span>
-                        <ForwardArrow className="w-3 h-3" />
+                    {relImg && (
+                      <Link href={`/blog/${rawRel.slug}/`} className="block aspect-video overflow-hidden bg-slate-200 dark:bg-slate-800">
+                        <img
+                          src={relImg}
+                          alt={isEn ? rel.title : rawRel.coverAlt || rel.title}
+                          referrerPolicy="no-referrer"
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
                       </Link>
+                    )}
+                    <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div>
+                        <span className="text-[11px] font-semibold text-teal-700 dark:text-teal-400 mb-1.5 block">
+                          {rel.category}
+                        </span>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-2 leading-snug">
+                          <Link href={`/blog/${rawRel.slug}/`} className="hover:text-teal-700 dark:hover:text-teal-400 transition">
+                            {rel.title}
+                          </Link>
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                          {rel.excerpt}
+                        </p>
+                      </div>
+                      <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between text-xs">
+                        <span className="text-slate-400 text-[11px]">{rawRel.publishedAt}</span>
+                        <Link
+                          href={`/blog/${rawRel.slug}/`}
+                          className="text-teal-700 dark:text-teal-400 font-bold hover:underline inline-flex items-center gap-1"
+                        >
+                          <span>{isEn ? 'Read Article' : 'اقرأ المقال'}</span>
+                          <ForwardArrow className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 );

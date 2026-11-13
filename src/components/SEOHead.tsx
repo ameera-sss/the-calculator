@@ -7,6 +7,8 @@ interface SEOHeadProps {
   canonicalPath?: string;
   type?: 'website' | 'article';
   keywords?: string[];
+  image?: string;
+  imageAlt?: string;
   publishedTime?: string;
   modifiedTime?: string;
   section?: string;
@@ -19,6 +21,8 @@ export function SEOHead({
   canonicalPath = '',
   type = 'website',
   keywords,
+  image,
+  imageAlt,
   publishedTime,
   modifiedTime,
   section,
@@ -64,6 +68,24 @@ export function SEOHead({
     setMeta('property', 'og:url', fullCanonical);
     setMeta('property', 'og:site_name', SITE_CONFIG.name);
 
+    const resolvedImage = image
+      ? image.startsWith('http') || image.startsWith('data:')
+        ? image
+        : `${SITE_CONFIG.url}${image.startsWith('/') ? image : `/${image}`}`
+      : '';
+
+    if (resolvedImage) {
+      setMeta('property', 'og:image', resolvedImage);
+      if (imageAlt) {
+        setMeta('property', 'og:image:alt', imageAlt);
+      } else {
+        removeMeta('property', 'og:image:alt');
+      }
+    } else {
+      removeMeta('property', 'og:image');
+      removeMeta('property', 'og:image:alt');
+    }
+
     if (type === 'article' && publishedTime) {
       setMeta('property', 'article:published_time', publishedTime);
       setMeta('property', 'article:modified_time', modifiedTime || publishedTime);
@@ -78,6 +100,11 @@ export function SEOHead({
     setMeta('name', 'twitter:card', 'summary_large_image');
     setMeta('name', 'twitter:title', fullTitle);
     setMeta('name', 'twitter:description', description);
+    if (resolvedImage) {
+      setMeta('name', 'twitter:image', resolvedImage);
+    } else {
+      removeMeta('name', 'twitter:image');
+    }
 
     // 5. Canonical Link
     let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
@@ -106,7 +133,7 @@ export function SEOHead({
       const script = document.getElementById('dynamic-jsonld');
       if (script) script.remove();
     };
-  }, [title, description, canonicalPath, type, keywords, publishedTime, modifiedTime, section, schema]);
+  }, [title, description, canonicalPath, type, keywords, image, imageAlt, publishedTime, modifiedTime, section, schema]);
 
   return null;
 }

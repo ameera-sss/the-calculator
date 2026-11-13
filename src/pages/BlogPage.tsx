@@ -3,6 +3,7 @@ import { SEOHead } from '../components/SEOHead';
 import { Link } from '../utils/router';
 import articlesData from '../data/articles.json';
 import { ARTICLES_EN } from '../data/articlesEn';
+import { getArticleCoverImage } from '../data/articleImages';
 import { SITE_CONFIG } from '../config/site';
 import { usePreferences } from '../context/PreferencesContext';
 
@@ -26,6 +27,9 @@ export function BlogPage() {
   };
 
   const localizedFeatured = featuredArticle ? getLocalized(featuredArticle) : null;
+  const featuredImg = featuredArticle
+    ? getArticleCoverImage(featuredArticle.slug, featuredArticle.coverImage)
+    : '';
 
   const schema = {
     '@context': 'https://schema.org',
@@ -36,6 +40,17 @@ export function BlogPage() {
       : 'مقالات عملية تساعد أصحاب المتاجر الإلكترونية على تحسين التسعير، وحساب الأرباح، وفهم تكاليف البيع وإدارة متاجرهم.',
     url: `${SITE_CONFIG.url}/blog/`,
     inLanguage: lang,
+    blogPost: articles.map((raw) => {
+      const loc = getLocalized(raw);
+      return {
+        '@type': 'BlogPosting',
+        headline: loc.title,
+        description: loc.description,
+        url: `${SITE_CONFIG.url}/blog/${raw.slug}/`,
+        datePublished: raw.publishedAt,
+        image: getArticleCoverImage(raw.slug, raw.coverImage),
+      };
+    }),
   };
 
   return (
@@ -52,6 +67,25 @@ export function BlogPage() {
             : 'مقالات عملية تساعد أصحاب المتاجر الإلكترونية على تحسين التسعير، وحساب الأرباح، وفهم تكاليف البيع وإدارة متاجرهم.'
         }
         canonicalPath="/blog/"
+        keywords={
+          isEn
+            ? [
+                'Saudi e-commerce blog',
+                'online store profit guide',
+                'product pricing strategies',
+                '15% VAT guide Saudi Arabia',
+                'reduce COD returns',
+              ]
+            : [
+                'مدونة التجارة الإلكترونية السعودية',
+                'حساب أرباح المتجر الإلكتروني',
+                'تسعير المنتجات',
+                'ضريبة القيمة المضافة 15%',
+                'تقليل تكلفة الطلب والخصومات',
+              ]
+        }
+        image={featuredImg}
+        imageAlt={localizedFeatured?.coverAlt}
         schema={schema}
       />
 
@@ -78,49 +112,67 @@ export function BlogPage() {
         {localizedFeatured && (
           <div className="mb-14">
             <div className="bg-gradient-to-br from-teal-900 via-slate-900 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-lg overflow-hidden relative border border-teal-800/50">
-              <div className="relative z-10 max-w-2xl space-y-4">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1 text-xs font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30 px-3 py-1 rounded-full">
-                    <Sparkles className="w-3 h-3" /> {isEn ? 'Featured Article' : 'مقال مميز'}
-                  </span>
-                  <span className="text-xs text-slate-300 bg-slate-800/80 px-2.5 py-1 rounded-full">
-                    {localizedFeatured.category}
-                  </span>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+                <div className="lg:col-span-7 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1 text-xs font-bold bg-teal-500/20 text-teal-300 border border-teal-500/30 px-3 py-1 rounded-full">
+                      <Sparkles className="w-3 h-3" /> {isEn ? 'Featured Article' : 'مقال مميز'}
+                    </span>
+                    <span className="text-xs text-slate-300 bg-slate-800/80 px-2.5 py-1 rounded-full">
+                      {localizedFeatured.category}
+                    </span>
+                  </div>
+
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white leading-snug">
+                    <Link
+                      href={`/blog/${localizedFeatured.slug}/`}
+                      className="hover:text-teal-300 transition-colors"
+                    >
+                      {localizedFeatured.title}
+                    </Link>
+                  </h2>
+
+                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                    {localizedFeatured.excerpt}
+                  </p>
+
+                  <div className="flex items-center gap-4 text-xs text-slate-400 pt-2">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {localizedFeatured.publishedAt}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <User className="w-3.5 h-3.5" />
+                      {localizedFeatured.author}
+                    </span>
+                  </div>
+
+                  <div className="pt-2">
+                    <Link
+                      href={`/blog/${localizedFeatured.slug}/`}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs sm:text-sm transition"
+                    >
+                      <span>{isEn ? 'Read Full Article' : 'اقرأ المقال بالكامل'}</span>
+                      <ArrowIcon className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-white leading-snug">
-                  <Link
-                    href={`/blog/${localizedFeatured.slug}/`}
-                    className="hover:text-teal-300 transition-colors"
-                  >
-                    {localizedFeatured.title}
-                  </Link>
-                </h2>
-
-                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-                  {localizedFeatured.excerpt}
-                </p>
-
-                <div className="flex items-center gap-4 text-xs text-slate-400 pt-2">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" />
-                    {localizedFeatured.publishedAt}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <User className="w-3.5 h-3.5" />
-                    {localizedFeatured.author}
-                  </span>
-                </div>
-
-                <div className="pt-2">
-                  <Link
-                    href={`/blog/${localizedFeatured.slug}/`}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs sm:text-sm transition"
-                  >
-                    <span>{isEn ? 'Read Full Article' : 'اقرأ المقال بالكامل'}</span>
-                    <ArrowIcon className="w-4 h-4" />
-                  </Link>
-                </div>
+                {featuredImg && (
+                  <div className="lg:col-span-5">
+                    <Link
+                      href={`/blog/${localizedFeatured.slug}/`}
+                      className="block rounded-2xl overflow-hidden border border-teal-700/50 shadow-xl group aspect-video bg-slate-800"
+                    >
+                      <img
+                        src={featuredImg}
+                        alt={localizedFeatured.coverAlt || localizedFeatured.title}
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -130,20 +182,36 @@ export function BlogPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {(featuredArticle ? regularArticles : articles).map((rawArticle) => {
             const article = getLocalized(rawArticle);
+            const coverSrc = getArticleCoverImage(rawArticle.slug, rawArticle.coverImage);
             return (
               <article
                 key={article.id}
-                className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs hover:shadow-md hover:border-teal-500/50 dark:hover:border-teal-500/60 transition-all flex flex-col justify-between overflow-hidden"
+                className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs hover:shadow-md hover:border-teal-500/50 dark:hover:border-teal-500/60 transition-all flex flex-col justify-between overflow-hidden"
               >
-                <div className="h-32 bg-gradient-to-br from-slate-100 to-teal-50/60 dark:from-slate-800 dark:to-teal-950/50 p-5 flex flex-col justify-between border-b border-slate-100 dark:border-slate-800">
-                  <span className="self-start text-[11px] font-bold text-teal-800 dark:text-teal-300 bg-teal-100/70 dark:bg-teal-950 border border-teal-200/80 dark:border-teal-800 px-2.5 py-0.5 rounded-md">
-                    {article.category}
-                  </span>
-                  <span className="text-[11px] text-slate-400 dark:text-slate-400 flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    {article.publishedAt}
-                  </span>
-                </div>
+                <Link
+                  href={`/blog/${article.slug}/`}
+                  className="relative aspect-video bg-slate-100 dark:bg-slate-800 overflow-hidden border-b border-slate-100 dark:border-slate-800 block"
+                >
+                  {coverSrc ? (
+                    <img
+                      src={coverSrc}
+                      alt={article.coverAlt || article.title}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : null}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-3 inset-x-4 flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-bold text-white bg-teal-700/90 backdrop-blur-xs px-2.5 py-0.5 rounded-md shadow-xs">
+                      {article.category}
+                    </span>
+                    <span className="text-[11px] text-slate-100 bg-slate-950/65 backdrop-blur-xs px-2 py-0.5 rounded-md flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {article.publishedAt}
+                    </span>
+                  </div>
+                </Link>
 
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div>

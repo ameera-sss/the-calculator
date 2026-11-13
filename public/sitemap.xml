@@ -43,6 +43,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://example.com/blog/smart-discount-campaigns-without-losing-profit/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://example.com/blog/reduce-order-cost-and-cod-returns-saudi-stores/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://example.com/user-guide/</loc>
     <lastmod>2026-10-13</lastmod>
     <changefreq>monthly</changefreq>

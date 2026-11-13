@@ -273,4 +273,110 @@ export const ARTICLES_EN: Record<string, EnArticleTranslation> = {
       },
     ],
   },
+  'smart-discount-campaigns-without-losing-profit': {
+    title: 'Managing Seasonal Discounts & Promotions Without Losing Store Profit',
+    description:
+      'A practical guide for Saudi online stores on calculating safe discount thresholds during White Friday, National Day, and Ramadan without eroding profit margins.',
+    excerpt:
+      'Learn how to calculate your safe maximum discount based on real profit margins and use smarter promotion structures to grow revenue profitably.',
+    category: 'Pricing Strategy',
+    author: 'Store Tools Editorial Team',
+    content: [
+      {
+        type: 'paragraph',
+        text: 'Saudi e-commerce stores see peak order volume during Founding Day, Saudi National Day, Ramadan, and White Friday. While promotions attract new buyers, offering arbitrary 20% or 30% sitewide discounts without checking unit economics can turn high sales days into net losses.',
+      },
+      {
+        type: 'heading',
+        level: 2,
+        text: '1. Why Discounts Cut Deeper Than Expected',
+      },
+      {
+        type: 'paragraph',
+        text: 'Discounts are deducted from the full selling price while product cost, shipping, and packaging remain fixed. If your pre-discount profit margin is 25% and you offer 20% off, you lose roughly 80% of your net profit before even counting ad spend.',
+      },
+      {
+        type: 'quote',
+        text: 'Your maximum safe discount must always stay below your contribution margin after product cost, shipping, and gateway commissions.',
+      },
+      {
+        type: 'heading',
+        level: 2,
+        text: '2. Practical SAR Impact Table (250 SAR Base Price, 165 SAR Cost)',
+      },
+      {
+        type: 'table',
+        headers: ['Discount Rate', 'Final Price', 'Customer Savings', 'Profit Before Ads', 'Remaining Margin'],
+        rows: [
+          ['0% (Original)', '250.00 SAR', '0.00 SAR', '85.00 SAR', '34.0%'],
+          ['10% Off', '225.00 SAR', '25.00 SAR', '60.00 SAR', '26.7%'],
+          ['20% Off', '200.00 SAR', '50.00 SAR', '35.00 SAR', '17.5%'],
+          ['30% Off', '175.00 SAR', '75.00 SAR', '10.00 SAR', '5.7%'],
+          ['40% Off', '150.00 SAR', '100.00 SAR', '-15.00 SAR (Loss)', '-10.0%'],
+        ],
+      },
+      {
+        type: 'heading',
+        level: 2,
+        text: '3. Smarter Alternatives to Flat Discounts',
+      },
+      {
+        type: 'list',
+        items: [
+          'Tiered Cart Discounts: e.g., 10% off above 250 SAR and 15% off above 400 SAR to raise Average Order Value.',
+          'Product Bundles: Pair core items with high-margin accessories instead of discounting individual SKUs.',
+          'Conditional Free Shipping: Set a minimum order threshold so additional margin covers courier charges.',
+        ],
+      },
+    ],
+  },
+  'reduce-order-cost-and-cod-returns-saudi-stores': {
+    title: 'Strategies to Reduce Per-Order Costs and COD Returns in Saudi Stores',
+    description:
+      'Break down every SAR in order fulfillment costs, understand the true financial impact of Cash-on-Delivery (COD) returns, and optimize store unit economics.',
+    excerpt:
+      'Analyze where every Riyal goes in order fulfillment and discover practical tactics to reduce COD return losses and shipping expenses.',
+    category: 'Operations & Logistics',
+    author: 'Store Tools Editorial Team',
+    content: [
+      {
+        type: 'paragraph',
+        text: 'In many online stores, profitability challenges come not from low order volume, but from hidden fulfillment costs across supplier pricing, shipping waybills, packaging, gateway fees, and ad spend.',
+      },
+      {
+        type: 'heading',
+        level: 2,
+        text: '1. Order Cost Breakdown in SAR',
+      },
+      {
+        type: 'table',
+        headers: ['Cost Item', 'Amount (SAR)', 'Share of Cost', 'Optimization Lever'],
+        rows: [
+          ['Base Product Cost', '65.00 SAR', '46.8%', 'Negotiate bulk supplier tiers'],
+          ['Marketing & Ads per Order', '35.00 SAR', '25.2%', 'Improve landing page conversion'],
+          ['Shipping & Delivery', '24.00 SAR', '17.3%', 'Use consolidated courier contracts'],
+          ['Packaging Materials', '6.00 SAR', '4.3%', 'Buy cartons and labels in bulk'],
+          ['Payment Gateway Fees', '4.00 SAR', '2.9%', 'Encourage prepaid Mada & Apple Pay'],
+          ['Additional Operating Costs', '5.00 SAR', '3.6%', 'Automate order confirmation flows'],
+        ],
+      },
+      {
+        type: 'heading',
+        level: 2,
+        text: '2. Financial Impact of COD Non-Delivery Returns',
+      },
+      {
+        type: 'quote',
+        text: 'Lowering Cash-on-Delivery refusal rates from 20% to 8% often boosts monthly net profit more than increasing ad spend.',
+      },
+      {
+        type: 'ordered-list',
+        items: [
+          'Incentivize Prepaid Orders: Offer priority dispatch or waive COD surcharge fees for Mada, card, and Apple Pay checkouts.',
+          'Confirm Addresses Before Dispatch: Automated WhatsApp address verification cuts failed delivery attempts significantly.',
+          'Audit Cost Shares Weekly: Use the Order Cost Calculator to spot sudden spikes in ad or courier ratios early.',
+        ],
+      },
+    ],
+  },
 };
